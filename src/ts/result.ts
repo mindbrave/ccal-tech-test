@@ -56,9 +56,10 @@ export const withDefault = <A, ERR>(defaultValue: A) => (result: Result<A, ERR>)
     }
 };
 
-export default {
+export const Result = {
     success,
     failure,
     map,
     withDefault,
+    andThen,
 };

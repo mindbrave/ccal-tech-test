@@ -2,7 +2,7 @@ import { Idea, IdeaId, IdeaType, IdeaTypeMap, isIdeaOfType } from "./idea";
 import { IdeaRepository, IdeaUpdate, UpdateError, } from "./idea-repository";
 import { NotificationService } from "../notification-service";
 import { Draft, Persisted } from "../ts/draft";
-import { andThen, Result, success } from "../ts/result";
+import { Result } from "../ts/result";
 import { pipe } from "../ts/pipe";
 import { any } from "ramda";
 
@@ -16,13 +16,13 @@ export class IdeaService {
   update(update: IdeaUpdate): Result<void, UpdateError> {
     return pipe(
       this.ideaRepository.update(update),
-      andThen(changes => {
+      Result.andThen(changes => {
         const fieldsToNotifyAbout = notifyOnChangesToTheseFields[update.type];
         const shouldNotifyAboutChange = any(field => changes.includes(field), fieldsToNotifyAbout);
         if (shouldNotifyAboutChange) {
           this.notificationService.notify(update);
         }
-        return success(undefined);
+        return Result.success(undefined);
       })
     );
   }

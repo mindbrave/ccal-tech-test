@@ -1,6 +1,6 @@
 import { Idea, IdeaType, Url } from "../idea";
 import { IdeaRepository } from "../idea-repository";
-import * as Maybe from "../../ts/maybe";
+import { Maybe } from "../../ts/maybe";
 import { expect } from "chai";
 import { Result, ResultType } from "../../ts/result";
 

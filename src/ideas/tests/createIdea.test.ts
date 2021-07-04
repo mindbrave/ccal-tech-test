@@ -5,7 +5,6 @@ import { IdeaRepository } from "../idea-repository";
 import { IdeaService } from "../idea-service";
 import { expectThatIdea } from "./expectIdea";
 import { instance, mock } from "ts-mockito";
-import { givenThereAreNoIdeasCreatedYet } from "./ideaFixtures";
 
 describe(`Create idea tests`, () => {
 

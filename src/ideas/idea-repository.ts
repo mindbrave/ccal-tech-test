@@ -2,8 +2,8 @@
 import { BasicIdea, Concept, Idea, IdeaId, IdeaType, IdeaTypeMap, ToDo } from "./idea";
 import { Draft, Persisted } from "../ts/draft";
 import { Maybe } from "../ts/maybe";
-import { andThen, failure, Result, success } from "../ts/result";
-import { equals } from "ramda";
+import { Result } from "../ts/result";
+import { equals, isNil } from "ramda";
 import { pipe } from "../ts/pipe";
 import { KeysOfUnion } from "../ts/union";
 
@@ -20,25 +20,25 @@ export class IdeaRepository {
 
     update(update: IdeaUpdate): Result<Changes, UpdateError> {
         const idea = this.ideasMap.get(update.id);
-        if (idea === undefined) {
-            return failure(UpdateError.IdeaDoesNotExist);
+        if (isNil(idea)) {
+            return Result.failure(UpdateError.IdeaDoesNotExist);
         }
         const updateResult = this.updateIdea(removeFieldsWithUndefinedValue(update), idea);
 
         return pipe(
             updateResult,
-            andThen(([updatedIdea, changes]) => {
+            Result.andThen(([updatedIdea, changes]) => {
                 this.ideasMap.set(idea.id, updatedIdea);
-                return success(changes);
+                return Result.success(changes);
             })
         );
     }
 
     private updateIdea<U extends IdeaUpdate>(update: U, idea: IdeaTypeMap[U["type"]]): Result<[IdeaTypeMap[U["type"]], Changes], UpdateError> {
         if (idea.type !== update.type) {
-            return failure(UpdateError.InvalidDataForGivenType);
+            return Result.failure(UpdateError.InvalidDataForGivenType);
         }
-        return success([{ ...idea, ...update }, this.getChanges(update, idea)]);
+        return Result.success([{ ...idea, ...update }, this.getChanges(update, idea)]);
     }
 
     private getChanges<U extends IdeaUpdate>(update: U, idea: IdeaTypeMap[U["type"]]): Changes {
@@ -51,7 +51,7 @@ export class IdeaRepository {
 
     get(ideaId: IdeaId): Maybe<Idea> {
         const idea = this.ideasMap.get(ideaId);
-        return idea === undefined ? null : idea;
+        return Maybe.from(idea);
     }
 
     all(): Idea[] {
