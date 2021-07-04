@@ -4,3 +4,5 @@
 .divshot-cache
 *.iml
 *.log
+node_modules
+.vscode
