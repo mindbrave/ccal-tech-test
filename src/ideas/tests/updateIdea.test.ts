@@ -10,12 +10,6 @@ import { givenBasicIdea, givenConcept, givenThereAreNoIdeasCreatedYet, givenToDo
 
 describe(`Update idea tests`, () => {
 
-    /*
-    
-    dont notify on update to title on todo
-
-    */
-
     test("can update just title in basic idea", () => {
         // Given
         const idea = givenBasicIdea(ideaRepository,
